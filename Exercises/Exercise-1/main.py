@@ -1,4 +1,12 @@
+
+from distutils.log import error
+from numpy import extract
 import requests
+import os
+from io import BytesIO
+from zipfile import ZipFile
+from urllib.request import urlopen
+
 
 download_uris = [
     'https://divvy-tripdata.s3.amazonaws.com/Divvy_Trips_2018_Q4.zip',
@@ -9,12 +17,16 @@ download_uris = [
     'https://divvy-tripdata.s3.amazonaws.com/Divvy_Trips_2020_Q1.zip',
     'https://divvy-tripdata.s3.amazonaws.com/Divvy_Trips_2220_Q1.zip'
 ]
-
-
-def main():
-    # your code here
-    pass
-
-
+if not os.path.isdir('downloads'):
+    os.makedirs('downloads')
+def main(download_uris):
+    for p,i in enumerate(download_uris):
+        try:
+            data = requests.get(i)   
+            zipfile = ZipFile(BytesIO(data.content)) 
+            zipfile.extractall('downloads')          
+        except :
+            print('error in uri')    
 if __name__ == '__main__':
-    main()
+    main(download_uris)
+    
